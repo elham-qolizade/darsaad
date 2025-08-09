@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ProductItem from "./ProductItem";
 import { fetchStockListAPI } from "../api/categoryApi"; 
+import { convertEnglishNumbersToPersian } from "../utils/numberUtils"; // اضافه شد
 
 const CategoryCard = ({ category, isOpen, toggleOpen, onEdit, token }) => {
   const [products, setProducts] = useState([]);
@@ -37,8 +38,11 @@ const CategoryCard = ({ category, isOpen, toggleOpen, onEdit, token }) => {
           {category.title}
         </h3>
         <span className="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-0 whitespace-nowrap">
-  تعداد محصولات: {isOpen ? products.length : category.productCount}
-</span>
+          تعداد محصولات:{" "}
+          {convertEnglishNumbersToPersian(
+            isOpen ? products.length : category.productCount
+          )}
+        </span>
 
         <div className="flex items-center justify-center gap-2">
           <button

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-// import { fetchWastes } from "../../service/waste.api";
 import { fetchWastes } from "../../service/waste.api";
+import { convertEnglishNumbersToPersian } from "../../../utils/numberUtils"; // ← اضافه کردن
 
 export default function WastePage() {
   const [wastes, setWastes] = useState([]);
@@ -45,30 +45,11 @@ export default function WastePage() {
     if (page < totalPages) setPage((p) => p + 1);
   };
 
-// const handleDelete = async (id) => {
-//   const token = localStorage.getItem("accessToken");
-//   if (!token) {
-//     setError("توکن ورود پیدا نکرد");
-//     return;
-//   }
-//   try {
-//     setLoading(true);
-//     await deleteWaste(token, id);
-//  
-//     setWastes((prevWastes) => prevWastes.filter((w) => w.id !== id));
-//     setError(null);
-//   } catch (err) {
-//     setError("خطا در حذف داده");
-//     console.error(err);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
-
   return (
     <div className="min-h-screen bg-gray-100 p-6 text-right" dir="rtl">
-      <h2 className="text-2xl font-bold text-gray-700 mb-4"> لیست دورریز انبار</h2>
+      <h2 className="text-2xl font-bold text-gray-700 mb-4">
+        لیست دورریز انبار
+      </h2>
 
       <input
         type="text"
@@ -89,53 +70,47 @@ export default function WastePage() {
         <div>داده‌ای پیدا نشد</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          
           {wastes.map((waste) => (
-  <div
-    key={waste.id}
-    className="bg-white p-5 rounded-xl shadow-md flex flex-col gap-4 relative"
-  >
-    {/* تاریخ */}
-    <div className="text-sm text-gray-500 border-b pb-1">
-      <span className="font-semibold">تاریخ ثبت:</span>{" "}
-      {new Date(waste.created_at).toLocaleDateString("fa-IR")}
-    </div>
+            <div
+              key={waste.id}
+              className="bg-white p-5 rounded-xl shadow-md flex flex-col gap-4 relative"
+            >
+              {/* تاریخ */}
+              <div className="text-sm text-gray-500 border-b pb-1">
+                <span className="font-semibold">تاریخ ثبت:</span>{" "}
+                {convertEnglishNumbersToPersian(
+                  new Date(waste.created_at).toLocaleDateString("fa-IR")
+                )}
+              </div>
 
-    {/* مواد و مقدار */}
-    {waste.substances && waste.substances.length > 0 && (
-      <div className="space-y-2">
-  
-        {waste.substances.map((s) => (
-          <div
-            key={s.id}
-            className="flex justify-between text-gray-600 text-sm items-center"
-          >
-            <div className="font-medium">{s.substance?.title || "بدون نام"}</div>
-            <div className="text-right">
-              <span className="font-semibold">{s.count}</span>{" "}
-              <span>{s.unit?.name || ""}</span>
-              {s.description?.trim() && (
-                <div className="text-xs text-gray-400 mt-1 italic">
-                  ({s.description})
+              {/* مواد و مقدار */}
+              {waste.substances && waste.substances.length > 0 && (
+                <div className="space-y-2">
+                  {waste.substances.map((s) => (
+                    <div
+                      key={s.id}
+                      className="flex justify-between text-gray-600 text-sm items-center"
+                    >
+                      <div className="font-medium">
+                        {s.substance?.title || "بدون نام"}
+                      </div>
+                      <div className="text-right">
+                        <span className="font-semibold">
+                          {convertEnglishNumbersToPersian(s.count)}
+                        </span>{" "}
+                        <span>{s.unit?.name || ""}</span>
+                        {s.description?.trim() && (
+                          <div className="text-xs text-gray-400 mt-1 italic">
+                            ({s.description})
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
-          </div>
-        ))}
-      </div>
-    )}
-
-    {/* دکمه حذف */}
-    {/* <button
-      onClick={() => handleDelete(waste.id)}
-      className="self-start mt-4 px-4 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition"
-    >
-      حذف
-    </button> */}
-  </div>
-))}
-
-
+          ))}
         </div>
       )}
 
@@ -145,10 +120,11 @@ export default function WastePage() {
           disabled={page === 1}
           className="px-4 py-1 bg-custom-blue text-white rounded disabled:opacity-50"
         >
-          صقحه قبل
+          صفحه قبل
         </button>
         <span className="text-gray-700">
-          صفحه {page} از {totalPages}
+          صفحه {convertEnglishNumbersToPersian(page)} از{" "}
+          {convertEnglishNumbersToPersian(totalPages)}
         </span>
         <button
           onClick={handleNext}

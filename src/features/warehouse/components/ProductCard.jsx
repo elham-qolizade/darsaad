@@ -7,7 +7,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { DateObject } from "react-multi-date-picker";
 import { fetchUnits } from "../../../api/unitApi";
-
+// import { convertEnglishNumbersToPersian } from "../../../utils/numberUtils";
 import { convertEnglishNumbersToPersian, convertPersianNumbersToEnglish } from '../../../utils/numberUtils';
 
 export default function ProductCard({ product }) {
@@ -245,27 +245,34 @@ export default function ProductCard({ product }) {
           <div className="font-semibold">{product.title || "نام محصول"}</div>
 
           <div className="text-gray-600 text-xs">
-            تاریخ انقضا:{" "}
-            {product.active_inventories && product.active_inventories.length > 0 && product.active_inventories[0].expire_date
-              ? new Date(product.active_inventories[0].expire_date).toLocaleDateString("fa-IR")
-              : "نامشخص"}
-          </div>
-          <div className="text-gray-600 text-xs">
-            قیمت:{" "}
-            {product.active_inventories && product.active_inventories.length > 0 && product.active_inventories[0].price
-              ? product.active_inventories[0].price.toLocaleString()
-              : "نامشخص"}
-          </div>
-          <div className="text-gray-600 text-xs">
-            تعداد موجود:{" "}
-            {product.active_inventories && product.active_inventories.length > 0
-              ? product.active_inventories.reduce(
-                  (sum, inv) => sum + parseFloat(inv.remained || 0),
-                  0
-                )
-              : 0}{" "}
-            {product.unit?.name || "بدون واحد"}
-          </div>
+  تاریخ انقضا:{" "}
+  {product.active_inventories?.[0]?.expire_date
+    ? convertEnglishNumbersToPersian(
+        new Date(product.active_inventories[0].expire_date).toLocaleDateString("fa-IR")
+      )
+    : "نامشخص"}
+</div>
+
+<div className="text-gray-600 text-xs">
+  قیمت:{" "}
+  {product.active_inventories?.[0]?.price
+    ? convertEnglishNumbersToPersian(
+        product.active_inventories[0].price.toLocaleString()
+      )
+    : "نامشخص"}
+</div>
+
+<div className="text-gray-600 text-xs">
+  تعداد موجود:{" "}
+  {convertEnglishNumbersToPersian(
+    product.active_inventories?.reduce(
+      (sum, inv) => sum + parseFloat(inv.remained || 0),
+      0
+    ) || 0
+  )}{" "}
+  {product.unit?.name || "بدون واحد"}
+</div>
+
         </div>
       </div>
 
