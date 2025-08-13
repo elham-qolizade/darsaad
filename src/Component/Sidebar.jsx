@@ -62,7 +62,7 @@ export default function Sidebar() {
       {/* منو */}
       <nav
         className={`
-          fixed top-0 right-0 h-screen flex flex-col items-center bg-custom-blue sm:bg-gray-100 text-white
+          fixed top-0 mr-2 right-0 h-screen flex flex-col items-center bg-custom-blue sm:bg-gray-100 text-white
           py-6 gap-6 rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out
           w-14 z-50
           md:translate-x-0 md:rounded-full md:shadow-none
