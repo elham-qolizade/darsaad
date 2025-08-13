@@ -27,7 +27,9 @@ export default function AddProductModal({
     charges: [{ expire_date: "", count: "", price: "" }],
   });
   const [localCategories, setLocalCategories] = useState(categories);
-
+  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  
   // خطاهای فرم
   const [formErrors, setFormErrors] = useState({});
   // const [categories, setCategories] = useState([]);
@@ -281,36 +283,74 @@ export default function AddProductModal({
 
         {/* دسته‌بندی */}
         <div>
+
+{/* دسته‌بندی */}
+<div>
   <label className="block mb-1 font-semibold" htmlFor="categories">
     دسته‌بندی
   </label>
   <select
-  id="categories"
-  value={form.categories[0] || ""}
-  onChange={(e) => {
-    if (e.target.value === "add_new") {
-      const newCategory = prompt("نام دسته‌بندی جدید را وارد کنید:");
-      if (newCategory) {
-        const newCatObj = { id: Date.now(), title: newCategory };
-        setLocalCategories([...localCategories, newCatObj]);
-        handleChange("categories", [newCatObj.id]);
+    id="categories"
+    value={form.categories[0] || ""}
+    onChange={(e) => {
+      if (e.target.value === "add_new") {
+        handleChange("categories", []);
+        setShowNewCategoryInput(true);
+      } else {
+        setShowNewCategoryInput(false);
+        handleChange("categories", e.target.value ? [e.target.value] : []);
       }
-    } else {
-      handleChange("categories", e.target.value ? [e.target.value] : []);
-    }
-  }}
-  className={`input w-full p-2 border rounded ${
-    formErrors.categories ? "border-red-500" : "border-gray-300"
-  }`}
->
-  <option value="">انتخاب دسته‌بندی</option>
-  {localCategories.map((cat) => (
-  <option key={cat.id} value={cat.id}>
-    {cat.title}
-  </option>
-))}
-  <option value="add_new">+ افزودن دسته‌بندی جدید</option>
-</select>
+    }}
+    className={`input w-full p-2 border rounded ${
+      formErrors.categories ? "border-red-500" : "border-gray-300"
+    }`}
+  >
+    <option value="">انتخاب دسته‌بندی</option>
+    {categories.map((cat) => (
+    <option key={cat.id} value={cat.id}>
+      {cat.title}
+    </option>
+  ))}
+    <option value="add_new">+ افزودن دسته‌بندی جدید</option>
+    {localCategories.map((cat) => (
+      <option key={cat.id} value={cat.id}>
+        {cat.title}
+      </option>
+    ))}
+  </select>
+
+  {showNewCategoryInput && (
+    <div className="flex mt-2 gap-2">
+      <input
+        type="text"
+        placeholder="نام دسته‌بندی جدید"
+        value={newCategoryName}
+        onChange={(e) => setNewCategoryName(e.target.value)}
+        className="flex-1 border border-gray-300 p-2 rounded"
+      />
+      <button
+        type="button"
+        onClick={() => {
+          if (newCategoryName.trim()) {
+            const newCatObj = { id: Date.now(), title: newCategoryName.trim() };
+            setLocalCategories([...localCategories, newCatObj]);
+            handleChange("categories", [newCatObj.id]);
+            setNewCategoryName("");
+            setShowNewCategoryInput(false);
+          }
+        }}
+        className="bg-blue-500 hover:bg-blue-600 text-white rounded px-3"
+      >
+        ذخیره
+      </button>
+    </div>
+  )}
+
+  {formErrors.categories && (
+    <p className="text-red-600 text-sm mt-1">{formErrors.categories}</p>
+  )}
+</div>
+
 
   {formErrors.categories && (
     <p className="text-red-600 text-sm mt-1">{formErrors.categories}</p>
