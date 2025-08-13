@@ -271,69 +271,43 @@ export default function AddProductModal({
         </div>
 
         {/* دسته‌بندی */}
-        <label className="flex flex-col">
-          دسته‌بندی
-          <Controller
-            name="categories"
-            control={control}
-            render={({ field }) => (
-              <>
-                {!addingCategory ? (
-                  <select
-                    {...field}
-                    value={field.value?.[0] || ""}
-                    onChange={(e) => {
-                      if (e.target.value === "add_new") {
-                        setAddingCategory(true);
-                      } else {
-                        field.onChange([e.target.value]);
-                      }
-                    }}
-                    className="border border-gray-300 rounded p-2 mt-1"
-                  >
-                    <option value="">انتخاب کنید</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.title}
-                      </option>
-                    ))}
-                    <option value="add_new">+ افزودن دسته‌بندی جدید</option>
-                  </select>
-                ) : (
-                  <div className="flex gap-2 mt-1">
-                    <input
-                      type="text"
-                      value={newCategory}
-                      onChange={(e) => setNewCategory(e.target.value)}
-                      placeholder="نام دسته‌بندی جدید"
-                      className="border border-gray-300 rounded p-2 flex-1"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleAddCategory}
-                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                    >
-                      ثبت
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setNewCategory("");
-                        setAddingCategory(false);
-                      }}
-                      className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
-                    >
-                      انصراف
-                    </button>
-                  </div>
-                )}
-                {errors.categories && (
-                  <p className="text-red-600">{errors.categories.message}</p>
-                )}
-              </>
-            )}
-          />
-        </label>
+        <div>
+  <label className="block mb-1 font-semibold" htmlFor="categories">
+    دسته‌بندی
+  </label>
+  <select
+    id="categories"
+    value={form.categories[0] || ""}
+    onChange={(e) => {
+      if (e.target.value === "add_new") {
+        const newCategory = prompt("نام دسته‌بندی جدید را وارد کنید:");
+        if (newCategory) {
+          // اضافه کردن دسته‌بندی جدید به آرایه categories
+          const newCatObj = { id: Date.now(), title: newCategory };
+          setCategories([...categories, newCatObj]);
+          handleChange("categories", [newCatObj.id]);
+        }
+      } else {
+        handleChange("categories", e.target.value ? [e.target.value] : []);
+      }
+    }}
+    className={`input w-full p-2 border rounded ${
+      formErrors.categories ? "border-red-500" : "border-gray-300"
+    }`}
+  >
+    <option value="">انتخاب دسته‌بندی</option>
+    {categories.map((cat) => (
+      <option key={cat.id} value={cat.id}>
+        {cat.title}
+      </option>
+    ))}
+    <option value="add_new">+ افزودن دسته‌بندی جدید</option>
+  </select>
+  {formErrors.categories && (
+    <p className="text-red-600 text-sm mt-1">{formErrors.categories}</p>
+  )}
+</div>
+
 
         {/* کالا فاسد شدنی */}
         <div className="flex items-center gap-2">
