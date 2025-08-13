@@ -5,6 +5,8 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import DateObject from "react-date-object";
 import { addCategoryAPI } from "../../service/warehouse.api";
+import { convertEnglishNumbersToPersian, convertPersianNumbersToEnglish } from '../../../utils/numberUtils';
+
 export default function AddProductModal({
   modalOpen,
   setModalOpen,
@@ -105,6 +107,7 @@ export default function AddProductModal({
         errors[`charge_count_${idx}`] = `تعداد شارژ ${idx + 1} باید عدد مثبت باشد.`;
       if (!charge.price || isNaN(Number(charge.price)) || Number(charge.price) <= 0)
         errors[`charge_price_${idx}`] = `قیمت شارژ ${idx + 1} باید عدد مثبت باشد.`;
+      
     });
 
     setFormErrors(errors);
@@ -124,8 +127,8 @@ export default function AddProductModal({
       expire_date: c.expire_date
         ? new DateObject(c.expire_date).convert().format("YYYY-MM-DD")
         : "",
-      count: Number(c.count),
-      price: Number(c.price),
+        count: Number(convertPersianNumbersToEnglish(c.count)),
+        price: Number(convertPersianNumbersToEnglish(c.price)),
     }));
 
     const payload = {
@@ -138,7 +141,6 @@ export default function AddProductModal({
       charges: validatedCharges,
     };
 
-    console.log("payload sent:", payload);
 
     try {
       const res = await addProduct(token, payload);
