@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import WarehousePage from "./features/warehouse/WarehousePage";
 import WastePage from "./features/warehouse/components/WastePage";
 import CategoryListPage from "./pages/CategoryList";
@@ -24,6 +25,7 @@ function AppRoutes({ token, onLogin }) {
       <Route path="/warehouse" element={<WarehousePage token={token} />} />
       <Route path="/waste" element={<WastePage token={token} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
+      toast.configure();
     </Routes>
   );
 }

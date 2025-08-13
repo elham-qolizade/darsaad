@@ -1,13 +1,30 @@
 import axios from "axios";
+const API_BASE_URL = "https://django-accounting.chbk.app/api";
 
-export const fetchCategoriesAPI = async (token, url = "https://django-accounting.chbk.app/api/stock-categories/") => {
-  console.log("token:", token);
+export const fetchCategoriesAPI = async (token, url = `${API_BASE_URL}/stock-categories/`) => {
   try {
     const res = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createCategoryAPI = async (token, newCategoryData) => {
+  try {
+    const res = await axios.post(
+      "https://django-accounting.chbk.app/stock-categories/",
+      newCategoryData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return res.data;
   } catch (error) {
     throw error;
@@ -51,4 +68,24 @@ export const updateCategoryAPI = async (token, categoryId, updatedData) => {
   } catch (error) {
     throw error;
   }
+};
+// // categoryApi.js
+// import axios from "axios";
+
+export const addCategoryAPI = async (token, newCategoryData) => {
+  try {
+    const res = await axios.post(
+      "https://django-accounting.chbk.app/api/stock-categories/",
+      newCategoryData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+  
 };

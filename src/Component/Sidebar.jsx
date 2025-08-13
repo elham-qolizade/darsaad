@@ -46,7 +46,7 @@ export default function Sidebar() {
 
       <div
         className={`
-          fixed top-0 sm:ms-2 left-0 h-screen flex flex-col items-center bg-custom-blue sm:bg-gray-100  text-white
+          fixed top-0 sm:mr-2 sm:ms-2 left-0 h-screen flex flex-col items-center bg-custom-blue sm:bg-gray-100  text-white
           py-6 gap-6 rounded-r-lg shadow-lg transition-transform duration-300 ease-in-out
           w-14 z-50
           md:translate-x-0 md:rounded-full md:shadow-none

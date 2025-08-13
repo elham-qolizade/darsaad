@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchWastes } from "../../service/waste.api";
-import { convertEnglishNumbersToPersian } from "../../../utils/numberUtils"; // ← اضافه کردن
+import { convertEnglishNumbersToPersian } from "../../../utils/numberUtils";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function WastePage() {
   const [wastes, setWastes] = useState([]);
@@ -9,6 +10,20 @@ export default function WastePage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [totalPages, setTotalPages] = useState(1);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [wasteMode, setWasteMode] = useState(location.pathname === "/waste");
+
+  const handleWasteToggle = (e) => {
+    const checked = e.target.checked;
+    setWasteMode(checked);
+    if (checked) {
+      navigate("/waste");
+    } else {
+      navigate("/warehouse"); // مسیر انبار
+    }
+  };
 
   useEffect(() => {
     const getWastes = async () => {
@@ -47,6 +62,22 @@ export default function WastePage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 text-right" dir="rtl">
+      {/* دکمه سوییچ بین انبار و دورریز */}
+      <label className="flex items-center gap-2 text-gray-600 font-medium cursor-pointer select-none mb-6">
+        دور ریز انبار
+        <div className="relative">
+          <input
+            type="checkbox"
+            className="sr-only peer"
+            checked={wasteMode}
+            onChange={handleWasteToggle}
+          />
+          <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-custom-blue transition-colors duration-300"></div>
+          <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow transform peer-checked:translate-x-5 transition-transform duration-300"></div>
+        </div>
+        <span className="text-gray-400">خرید انبار</span>
+      </label>
+
       <h2 className="text-2xl font-bold text-gray-700 mb-4">
         لیست دورریز انبار
       </h2>
@@ -137,3 +168,4 @@ export default function WastePage() {
     </div>
   );
 }
+

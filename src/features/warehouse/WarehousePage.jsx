@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-// import ProductCard from "./components/StockPurchaseItemsList";
-import StockPurchaseItemsList from "./components/StockPurchaseItemsList";
 
+import StockPurchaseItemsList from "./components/StockPurchaseItemsList";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { fetchCategories, addProduct } from "../service/warehouse.api";
 import { fetchStockItems } from "../service/stock.api";
 import { BsFilterRight } from "react-icons/bs";
@@ -9,17 +10,18 @@ import { FaFilter } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../Component/Sidebar";
 import AddProductModal from "./components/AddToWarehouse";
+import { fetchUnits } from "../../api/unitApi";
 
 export default function WarehousePage({ token }) {
   const [wasteMode, setWasteMode] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   // const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const [units, setUnits] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPageStock, setHasNextPageStock] = useState(false);
   const [hasPrevPageStock, setHasPrevPageStock] = useState(false);
 
-  const [units, setUnits] = useState([]);
+  // const [units, setUnits] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [errorCategories, setErrorCategories] = useState("");
@@ -39,7 +41,16 @@ export default function WarehousePage({ token }) {
     perishable: false,
     stock_alert_on: "0",
   });
+  const [refreshFlag, setRefreshFlag] = useState(0);
 
+  const handleAddProduct = async (payload) => {
+    try {
+      await addProduct(token, payload);
+      setRefreshFlag(prev => prev + 1);
+    } catch (error) {
+      console.error("خطا در ثبت محصول:", error);
+    }
+  };
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -106,7 +117,23 @@ export default function WarehousePage({ token }) {
     setCurrentPage(1); 
   };
   
-  
+  useEffect(() => {
+    async function loadUnits() {
+      setLoadingUnits(true);
+      try {
+        const data = await fetchUnits(token);
+        // فرض می‌گیریم data یه آرایه از واحدهاست
+        setUnits(data);
+      } catch (e) {
+        console.error("خطا در دریافت واحدها:", e);
+        setError("خطا در دریافت واحدها");
+      } finally {
+        setLoadingUnits(false);
+      }
+    }
+
+    loadUnits();
+  }, [token]);
 
 
   const handleSubmit = async (e) => {
@@ -183,7 +210,7 @@ export default function WarehousePage({ token }) {
                 checked={wasteMode}
                 onChange={handleWasteToggle}
               />
-              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue-600 transition-colors duration-300"></div>
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-blue transition-colors duration-300"></div>
               <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow transform peer-checked:translate-x-5 transition-transform duration-300"></div>
             </div>
             <span className="text-gray-400">دور ریز انبار</span>
@@ -221,7 +248,7 @@ export default function WarehousePage({ token }) {
 
             <button
               onClick={() => setModalOpen(true)}
-              className="bg-[#0A2A57] items-center text-white px-3 py-1.5 rounded-md flex justify-center gap-1 text-sm hover:bg-[#0C3565] transition w-full sm:w-auto"
+              className="bg-custom-blue items-center text-white px-3 py-1.5 rounded-md flex justify-center gap-1 text-sm hover:bg-[#0C3565] transition w-full sm:w-auto"
             >
               <span className="text-center">مواد اولیه جدید</span>
               <span className="text-base font-semibold">+</span>
@@ -244,17 +271,109 @@ export default function WarehousePage({ token }) {
         </div>
 
         <AddProductModal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          productData={productData}
-          handleChange={handleChange}
-          handleChangeMulti={handleChangeMulti}
-          handleSubmit={handleSubmit}
-          units={units}
-          categories={categories}
-          loading={loading}
-          error={error}
-        />
+  addProduct={addProduct}
+  modalOpen={modalOpen}
+  setModalOpen={setModalOpen}
+  productData={productData}
+  units={units}
+  categories={categories}
+  loading={loading}
+  setLoading={setLoading}
+  error={error}
+  setError={setError}
+  token={token}
+  onSubmit={async (data) => {
+    console.log("submit clicked", data);
+
+    // چک کن unit داخل units هست یا نه
+    const unitExists = units.some(unit => unit.id === data.unit);
+    if (!unitExists) {
+      alert("واحد انتخاب شده معتبر نیست");
+      return setLoading(false);
+    }
+
+    setLoading(true);
+
+    if (!Array.isArray(data.charges) || data.charges.length === 0) {
+      alert("حداقل یک شارژ باید وارد کنید");
+      setLoading(false);
+      return;
+    }
+
+    // اعتبارسنجی شارژها
+    let hasError = false;
+    const validatedCharges = data.charges.map((c, index) => {
+      const expireDate = typeof c.expire_date === "string" ? c.expire_date.trim() : "";
+      const countNum = Number(c.count);
+      const priceNum = Number(c.price);
+
+      if (!expireDate) {
+        console.warn(`شارژ شماره ${index + 1}: تاریخ انقضا خالیه`);
+        hasError = true;
+      }
+      if (isNaN(countNum) || countNum < 0) {
+        console.warn(`شارژ شماره ${index + 1}: تعداد نامعتبره`);
+        hasError = true;
+      }
+      if (isNaN(priceNum) || priceNum < 0) {
+        console.warn(`شارژ شماره ${index + 1}: قیمت نامعتبره`);
+        hasError = true;
+      }
+
+      return {
+        expire_date: expireDate,
+        count: countNum,
+        price: priceNum,
+      };
+    });
+
+    if (hasError) {
+      alert("مقادیر شارژ رو درست وارد کنید");
+      setLoading(false);
+      return;
+    }
+
+    const payload = {
+      ...data,
+      charges: validatedCharges,
+    };
+
+    console.log("payload to send:", payload);
+
+    try {
+      await addProduct(token, payload);
+      alert("ثبت با موفقیت انجام شد");
+      setModalOpen(false);
+    } catch (e) {
+      console.error("Server error:", e);
+
+      if (e.response && e.response.data) {
+        const errors = e.response.data;
+
+        if (errors.charges && Array.isArray(errors.charges)) {
+          let msg = "مشکلات شارژ:\n";
+          errors.charges.forEach((chargeErr, i) => {
+            if (chargeErr && typeof chargeErr === "object") {
+              Object.entries(chargeErr).forEach(([field, messages]) => {
+                msg += `شارژ ${i + 1} → ${field}: ${messages.join(", ")}\n`;
+              });
+            }
+          });
+          alert(msg);
+        } else {
+          alert("خطا: " + JSON.stringify(errors));
+        }
+      } else {
+        alert("خطای ناشناخته در سرور");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }}
+/>
+
+
+
       </main>
     </div>
   );

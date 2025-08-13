@@ -62,28 +62,6 @@ export default function EditCategoryModal({ category, onClose, onSave }) {
                 />
               </label>
 
-              <label className="block mb-4">
-                لینک عکس
-                <Field
-                  name="image"
-                  className="w-full p-2 mt-1 border rounded focus:outline-none focus:ring-2 focus:ring-custom-blue"
-                  placeholder="https://example.com/image.jpg"
-                />
-                <ErrorMessage
-                  name="image"
-                  component="div"
-                  className="text-red-600 text-xs mt-1"
-                />
-              </label>
-
-              <label className="flex items-center gap-2 mb-6">
-                <Field
-                  type="checkbox"
-                  name="is_active"
-                  className="w-4 h-4"
-                />
-                فعال باشد
-              </label>
 
               <div className="flex flex-col sm:flex-row justify-end gap-3">
                 <button

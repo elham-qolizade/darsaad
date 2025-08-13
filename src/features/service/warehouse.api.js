@@ -14,10 +14,30 @@ export async function fetchCategories(token, page = 1) {
 
 
 export async function addProduct(token, payload) {
+  console.log("Sending payload to API:", payload);
   const res = await axios.post(`${API_BASE_URL}/stock/`, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log("Response from API:", res.data);
   return res.data;
 }
+
+export const addCategoryAPI = async (token, newCategoryData) => {
+  try {
+    const res = await axios.post(
+      "https://django-accounting.chbk.app/api/stock-categories/",
+      newCategoryData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+  
+};

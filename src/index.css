@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.my-masonry-grid {
+    display: flex;
+    margin-left: -16px; /* فاصله منفی gutter */
+    width: auto;
+  }
+  .my-masonry-grid_column {
+    padding-left: 16px; /* فاصله بین ستون‌ها */
+    background-clip: padding-box;
+  }
+  
+  /* فاصله عمودی بین آیتم‌ها */
+  .my-masonry-grid_column > div {
+    margin-bottom: 16px;
+  }
+  

@@ -28,13 +28,13 @@ export default function WasteModal({
           className="space-y-3 text-xs"
         >
           <label htmlFor="count" className="font-semibold">
-            تعداد ضایعات
+            مقدار ضایعات
           </label>
           <input
             type="number"
             name="count"
             id="count"
-            placeholder="تعداد ضایعات"
+            placeholder="مقدار ضایعات"
             value={wasteForm.count}
             onChange={handleWasteChange}
             className="w-full px-2 py-1 rounded border border-gray-300"
