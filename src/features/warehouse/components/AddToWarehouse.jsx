@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { addProduct } from "../../service/warehouse.api";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
@@ -26,16 +26,25 @@ export default function AddProductModal({
     unit_price: "",
     charges: [{ expire_date: "", count: "", price: "" }],
   });
+  const [localCategories, setLocalCategories] = useState(categories);
 
   // خطاهای فرم
   const [formErrors, setFormErrors] = useState({});
+  // const [categories, setCategories] = useState([]);
 
   // وقتی فیلدی تغییر می‌کنه، مقدارش رو تو state بذار و خطاشو پاک کن
   const handleChange = (name, value) => {
     setForm((prev) => ({ ...prev, [name]: value }));
     setFormErrors((prev) => ({ ...prev, [name]: null }));
   };
-
+  useEffect(() => {
+    async function fetchCategories() {
+      const res = await getCategoriesAPI(token);
+      setCategories(res || []);
+    }
+    fetchCategories();
+  }, []);
+  
   // تغییر تو شارژها
   const handleChargeChange = (index, field, value) => {
     setForm((prev) => {
@@ -276,33 +285,33 @@ export default function AddProductModal({
     دسته‌بندی
   </label>
   <select
-    id="categories"
-    value={form.categories[0] || ""}
-    onChange={(e) => {
-      if (e.target.value === "add_new") {
-        const newCategory = prompt("نام دسته‌بندی جدید را وارد کنید:");
-        if (newCategory) {
-          // اضافه کردن دسته‌بندی جدید به آرایه categories
-          const newCatObj = { id: Date.now(), title: newCategory };
-          setCategories([...categories, newCatObj]);
-          handleChange("categories", [newCatObj.id]);
-        }
-      } else {
-        handleChange("categories", e.target.value ? [e.target.value] : []);
+  id="categories"
+  value={form.categories[0] || ""}
+  onChange={(e) => {
+    if (e.target.value === "add_new") {
+      const newCategory = prompt("نام دسته‌بندی جدید را وارد کنید:");
+      if (newCategory) {
+        const newCatObj = { id: Date.now(), title: newCategory };
+        setLocalCategories([...localCategories, newCatObj]);
+        handleChange("categories", [newCatObj.id]);
       }
-    }}
-    className={`input w-full p-2 border rounded ${
-      formErrors.categories ? "border-red-500" : "border-gray-300"
-    }`}
-  >
-    <option value="">انتخاب دسته‌بندی</option>
-    {categories.map((cat) => (
-      <option key={cat.id} value={cat.id}>
-        {cat.title}
-      </option>
-    ))}
-    <option value="add_new">+ افزودن دسته‌بندی جدید</option>
-  </select>
+    } else {
+      handleChange("categories", e.target.value ? [e.target.value] : []);
+    }
+  }}
+  className={`input w-full p-2 border rounded ${
+    formErrors.categories ? "border-red-500" : "border-gray-300"
+  }`}
+>
+  <option value="">انتخاب دسته‌بندی</option>
+  {localCategories.map((cat) => (
+  <option key={cat.id} value={cat.id}>
+    {cat.title}
+  </option>
+))}
+  <option value="add_new">+ افزودن دسته‌بندی جدید</option>
+</select>
+
   {formErrors.categories && (
     <p className="text-red-600 text-sm mt-1">{formErrors.categories}</p>
   )}
