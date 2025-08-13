@@ -1,7 +1,8 @@
 import axios from "axios";
+const API_BASE_URL = "https://django-bingo.chbk.app/en/api";
 
-export const fetchCategoriesAPI = async (token, url = "https://django-accounting.chbk.app/api/stock-categories/") => {
-  console.log("token:", token);
+
+export const fetchCategoriesAPI = async (token, url = `${API_BASE_URL}/stock-categories/`) => {
   try {
     const res = await axios.get(url, {
       headers: {
@@ -14,10 +15,27 @@ export const fetchCategoriesAPI = async (token, url = "https://django-accounting
   }
 };
 
+export const createCategoryAPI = async (token, newCategoryData) => {
+  try {
+    const res = await axios.post(
+      "https://django-bingo.chbk.app/en/api/stock-categories/",
+      newCategoryData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const fetchStockListAPI = async (token, categoryId) => {
   try {
     const res = await axios.get(
-      `https://django-accounting.chbk.app/api/stock/`,
+      `https://django-bingo.chbk.app/en/api/stock/`,
       {
         headers: {
           Authorization: `Bearer ${token}`
@@ -39,7 +57,7 @@ export const fetchStockListAPI = async (token, categoryId) => {
 export const updateCategoryAPI = async (token, categoryId, updatedData) => {
   try {
     const res = await axios.patch(
-      `https://django-accounting.chbk.app/api/stock-categories/${categoryId}/`,
+      `https://django-bingo.chbk.app/en/api/stock-categories/${categoryId}/`,
       updatedData,
       {
         headers: {
@@ -51,4 +69,24 @@ export const updateCategoryAPI = async (token, categoryId, updatedData) => {
   } catch (error) {
     throw error;
   }
+};
+// // categoryApi.js
+// import axios from "axios";
+
+export const addCategoryAPI = async (token, newCategoryData) => {
+  try {
+    const res = await axios.post(
+      "https://django-bingo.chbk.app/en/api/stock-categories/",
+      newCategoryData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+  
 };

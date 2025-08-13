@@ -61,12 +61,12 @@ export default function ChargeModal({
               />
 
               <label htmlFor="count" className="font-semibold">
-                تعداد
+                مقدار
               </label>
               <Field
                 type="number"
                 name="count"
-                placeholder="تعداد"
+                placeholder="مقدار"
                 className="w-full px-2 py-1 rounded border border-gray-300"
               />
               <ErrorMessage

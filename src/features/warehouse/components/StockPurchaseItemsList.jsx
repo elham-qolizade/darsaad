@@ -14,7 +14,7 @@ export default function StockPurchaseItemsList({ selectedCategories, token }) {
   useEffect(() => {
     const getItems = async () => {
       if (!token) {
-        setError("توکن ورود پیدا نشد");
+        setError("No token found");
         setLoading(false);
         return;
       }
@@ -28,7 +28,7 @@ export default function StockPurchaseItemsList({ selectedCategories, token }) {
         setTotalItems(data.count || 0);
       } catch (err) {
         console.error(err);
-        setError(err.response?.data?.detail || "خطا در دریافت اطلاعات");
+        setError(err.response?.data?.detail || "Failed to fetch data");
       } finally {
         setLoading(false);
       }
@@ -44,39 +44,39 @@ export default function StockPurchaseItemsList({ selectedCategories, token }) {
     setCurrentPage(page);
   };
 
-  if (loading) return <div>در حال بارگذاری...</div>;
+  if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
-  if (items.length === 0) return <div>هیچ آیتمی موجود نیست</div>;
+  if (items.length === 0) return <div>No items found</div>;
 
   return (
-    <div className="p-4">
-      <div className="space-y-4">
-        {items.map((item) => (
-          <ProductCard key={item.id} product={item} />
-        ))}
-      </div>
-      <div className="flex justify-center items-center gap-3 mt-6">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 rounded bg-gray-200 disabled:bg-gray-100"
-        >
-          صفحه قبل
-        </button>
-
-        <span className="text-gray-700">
-          صفحه {currentPage} از {totalPages}
-        </span>
-
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded bg-gray-200 disabled:bg-gray-100"
-        >
-          صفحه بعد
-        </button>
-      </div>
+    <div dir="ltr" className="p-4">
+    <div dir="ltr" className="space-y-4">
+      {items.map((item) => (
+        <ProductCard key={item.id} product={item} />
+      ))}
     </div>
+    <div dir="ltr" className="flex justify-center items-center gap-3 mt-6">
+      <button
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="px-3 py-1 rounded bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
+        Prev
+      </button>
+  
+      <span className="text-gray-700 select-none">
+        Page {currentPage} of {totalPages}
+      </span>
+  
+      <button
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="px-3 py-1 rounded bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+  
   );
 }
-

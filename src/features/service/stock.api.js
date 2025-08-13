@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://django-accounting.chbk.app/api";
+const API_BASE_URL = "https://django-bingo.chbk.app/en/api";
 
 
 export const fetchStockItems = async (token, page = 1, categoryIds = []) => {

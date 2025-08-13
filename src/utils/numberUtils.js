@@ -1,3 +1,4 @@
+// Converts English digits in a string to Persian digits
 export function convertEnglishNumbersToPersian(input) {
   input = String(input || '');
   const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -11,13 +12,14 @@ export function convertEnglishNumbersToPersian(input) {
   return output;
 }
 
+// Converts Persian digits in a string to English digits
 export function convertPersianNumbersToEnglish(input) {
   input = String(input || '');
-  const persianNumbers = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-  const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
+  const persianNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+  const englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
   let output = '';
-  for(let char of input) {
+  for (let char of input) {
     const index = persianNumbers.indexOf(char);
     output += index !== -1 ? englishNumbers[index] : char;
   }

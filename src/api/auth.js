@@ -1,7 +1,7 @@
 // src/api/auth.js
 import axios from "axios";
 
-const API_BASE = "https://django-accounting.chbk.app/api";
+const API_BASE = "https://django-bingo.chbk.app/en/api";
 
 // ارسال OTP
 export const sendOtpRequest = (phone) => {

@@ -3,7 +3,7 @@ import axios from "axios";
 export async function fetchUnits(token) {
   if (!token) return [];
   try {
-    const res = await axios.get("https://django-accounting.chbk.app/api/units/", {
+    const res = await axios.get("https://django-bingo.chbk.app/en/api/units/", {
       headers: { Authorization: `Bearer ${token}` },
     });
     return res.data.results;
