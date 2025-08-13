@@ -256,7 +256,7 @@ export default function WarehousePage({ token }) {
         </div>
       </div>
 
-      <div dir="rtl" className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div dir="rtl" className="">
         {loading ? (
           <p>در حال بارگذاری محصولات...</p>
         ) : filteredStockItems.length === 0 ? (

@@ -167,6 +167,7 @@ export default function CategoryListPage({ token }) {
               </Masonry>
             </div>
           </div>
+          
         </div>
 
         {editModalOpen && selectedCategory && (

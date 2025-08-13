@@ -250,7 +250,7 @@ export default function ProductCard({ product }) {
     return (
       <div className="bg-white rounded-lg shadow-md p-4 flex flex-col gap-4">
         {/* دکمه‌ها و اطلاعات محصول */}
-        <div className="flex flex-col-reverse md:flex-row-reverse justify-between items-start md:items-center gap-4">
+        <div className="flex  flex-col-reverse md:flex-row-reverse justify-between items-start md:items-center gap-4">
           <div className="flex flex-col gap-2 w-full md:w-auto">
             <button
               onClick={() => {

@@ -49,13 +49,32 @@ export default function StockPurchaseItemsList({ selectedCategories, token }) {
   if (items.length === 0) return <div>هیچ آیتمی موجود نیست</div>;
 
   return (
-    <div className="p-4">
-      <div className="space-y-4">
-        {items.map((item) => (
-          <ProductCard key={item.id} product={item} />
-        ))}
-      </div>
-      <div className="flex justify-center items-center gap-3 mt-6">
+    <div className="flex flex-col ">
+   
+   <div className="flex gap-4">
+  {/* ستون اول */}
+  <div className="flex flex-col gap-4 w-1/3">
+    {items.slice(0, 5).map((item) => (
+      <ProductCard key={item.id} product={item} />
+    ))}
+  </div>
+
+  {/* ستون دوم */}
+  <div className="flex flex-col gap-4 w-1/3">
+    {items.slice(5, 10).map((item) => (
+      <ProductCard key={item.id} product={item} />
+    ))}
+  </div>
+
+  {/* ستون سوم */}
+  <div className="flex flex-col gap-4 w-1/3">
+    {items.slice(10).map((item) => (
+      <ProductCard key={item.id} product={item} />
+    ))}
+  </div>
+</div>
+
+      <div className="flex justify-start items-start gap-3 mt-6">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
